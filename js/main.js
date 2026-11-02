@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const typewriterEl = document.getElementById('typewriter');
     if (typewriterEl) {
-        const words = ['Front-End Developer', 'UI/UX Enthusiast', 'Creative Coder', 'Problem Solver'];
+        const words = ['Front-End Developer', 'CS Student', 'Bootstrap Developer', 'Internship Seeker'];
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -85,90 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => revealObserver.observe(el));
 
     // ==========================================
-    // 4. Skill Bar Animations
-    // ==========================================
-    const skillBars = document.querySelectorAll('.skill-progress');
-    const skillPercents = document.querySelectorAll('.skill-percent');
-
-    const skillObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const bar = entry.target;
-            const progress = bar.getAttribute('data-progress');
-            if (progress) {
-                bar.style.width = `${progress}%`;
-            }
-            observer.unobserve(bar);
-        });
-    }, { threshold: 0.3 });
-
-    skillBars.forEach(bar => skillObserver.observe(bar));
-
-    // Animate skill percent counters
-    const percentObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const el = entry.target;
-            const target = parseInt(el.getAttribute('data-target'), 10);
-            if (isNaN(target)) return;
-
-            let current = 0;
-            const duration = 1500;
-            const increment = target / (duration / 16);
-
-            const update = () => {
-                current += increment;
-                if (current < target) {
-                    el.textContent = Math.ceil(current) + '%';
-                    requestAnimationFrame(update);
-                } else {
-                    el.textContent = target + '%';
-                }
-            };
-            update();
-            observer.unobserve(el);
-        });
-    }, { threshold: 0.3 });
-
-    skillPercents.forEach(el => percentObserver.observe(el));
-
-    // ==========================================
-    // 5. Project Filtering
-    // ==========================================
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectItems = document.querySelectorAll('.project-item');
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Update active button
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const filter = btn.getAttribute('data-filter');
-
-            projectItems.forEach(item => {
-                const category = item.getAttribute('data-category');
-                if (filter === 'all' || category === filter) {
-                    item.classList.remove('hidden');
-                    item.style.display = '';
-                    requestAnimationFrame(() => {
-                        item.style.opacity = '1';
-                        item.style.transform = 'scale(1)';
-                    });
-                } else {
-                    item.style.opacity = '0';
-                    item.style.transform = 'scale(0.8)';
-                    setTimeout(() => {
-                        item.style.display = 'none';
-                        item.classList.add('hidden');
-                    }, 400);
-                }
-            });
-        });
-    });
-
-    // ==========================================
-    // 6. Smooth Scrolling + Close Mobile Menu
+    // 4. Smooth Scrolling + Close Mobile Menu
     // ==========================================
     const navbarCollapse = document.getElementById('navbarNav');
     const bsCollapse = navbarCollapse ? new bootstrap.Collapse(navbarCollapse, { toggle: false }) : null;
@@ -197,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 7. Floating Particles in Hero
+    // 5. Floating Particles in Hero
     // ==========================================
     const particlesContainer = document.getElementById('heroParticles');
     if (particlesContainer) {
@@ -238,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 8. 3D Tilt Effect on Cards
+    // 6. 3D Tilt Effect on Cards
     // ==========================================
     const tiltCards = document.querySelectorAll('.tilt-card');
 
@@ -264,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 9. Counter Animation (About Stats)
+    // 7. Counter Animation (About Stats)
     // ==========================================
     const counters = document.querySelectorAll('.counter');
 
@@ -298,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     counters.forEach(c => counterObserver.observe(c));
 
     // ==========================================
-    // 10. Back to Top Button
+    // 8. Back to Top Button
     // ==========================================
     const backToTopBtn = document.getElementById('backToTop');
 
@@ -313,13 +230,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 11. Contact Form Handling
+    // 9. Contact Form Handling (mailto fallback)
     // ==========================================
     const contactForm = document.getElementById('contactForm');
 
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+            // If form action contains "TODO", use mailto fallback instead
+            const action = this.getAttribute('action') || '';
+            const useMailto = action.includes('TODO');
+
+            if (useMailto) {
+                e.preventDefault();
+            }
 
             let isValid = true;
             const inputs = this.querySelectorAll('input[required], textarea[required]');
@@ -341,31 +264,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if (isValid) {
+            if (isValid && useMailto) {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                const body = `From: ${name} (${email})%0A%0A${encodeURIComponent(message)}`;
+                const mailtoLink = `mailto:elshenawya747@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+
                 const btnText = this.querySelector('.btn-text');
                 const btnLoading = this.querySelector('.btn-loading');
                 const btnSuccess = this.querySelector('.btn-success-msg');
                 const submitBtn = this.querySelector('.btn-submit');
 
-                // Show loading
+                // Show loading briefly
                 if (btnText) btnText.classList.add('d-none');
                 if (btnLoading) btnLoading.classList.remove('d-none');
                 if (submitBtn) submitBtn.disabled = true;
 
-                // Simulate sending
                 setTimeout(() => {
                     if (btnLoading) btnLoading.classList.add('d-none');
                     if (btnSuccess) btnSuccess.classList.remove('d-none');
 
+                    window.location.href = mailtoLink;
                     this.reset();
 
-                    // Reset button after 3s
                     setTimeout(() => {
                         if (btnSuccess) btnSuccess.classList.add('d-none');
                         if (btnText) btnText.classList.remove('d-none');
                         if (submitBtn) submitBtn.disabled = false;
                     }, 3000);
-                }, 1500);
+                }, 800);
             }
         });
 
